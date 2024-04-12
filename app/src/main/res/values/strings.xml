@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Notes2Tab</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="main_fragment">M</string>
+    <string name="search_fragment">S</string>
+    <string name="n2t_fragment">N2T</string>
+    <string name="settings_fragment">S</string>
+    <string name="profile_fragment">P</string>
+    <string name="profile_description">Sign in to fully use the app</string>
+    <string name="log_in">Log in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="et_hint_email">Email</string>
+    <string name="et_hint_password">Password</string>
+    <string name="et_hint_name">Name</string>
+    <string name="forgot_pass">Forgot your password?</string>
+    <string name="confirm_email">Please confirm your email address.</string>
+    <string name="resend">Resend</string>
+    <string name="personal">Personal</string>
+    <string name="favorites">Favorites</string>
+    <string name="my_recipes">My recipes</string>
+    <string name="settings">Settings</string>
+    <string name="about_us">About us</string>
+    <string name="exit">Exit</string>
+    <string name="toast_msg_validityCheck">Invalid email or password.</string>
+    <string name="toast_msg_signup_successfully">Account created successfully.</string>
+    <string name="toast_msg_signup_failed">Authentication failed.</string>
+    <string name="toast_msg_login_failed">Authentication failed.</string>
+    <string name="toast_msg_sending_letter_successfully">The letter has been sent.</string>
+    <string name="toast_msg_sending_letter_failed">An error has occurred, please try again later.</string>
+    <string name="toast_msg_change_name_field">The field must not be empty.</string>
+    <string name="toast_msg_existence_of_email_true">A user with such an email already exists.</string>
+    <string name="toast_msg_existence_of_email_false">There is no user with such mail.</string>
+</resources>

@@ -2,6 +2,7 @@ package com.example.notes2tab
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.btNavSettinds -> {
                     navController.navigate(R.id.settingsFragment)
+                    Toast.makeText(this, "dede", Toast.LENGTH_LONG).show()
                     true
                 }
                 R.id.btNavProfile -> {

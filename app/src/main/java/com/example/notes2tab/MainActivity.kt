@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         btNav = findViewById<BottomNavigationView>(R.id.btNavigation)
         navController = findNavController(R.id.nav_host_fragment)
 
+        //Слушатель выбранного элемента на BottomNavigationView
         btNav.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.btNavHome -> {

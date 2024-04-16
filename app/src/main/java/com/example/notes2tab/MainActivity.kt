@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.btNavN2T -> {
-                    navController.navigate(R.id.N2TFragment)
+                    navController.navigate(R.id.CameraFragment)
                     true
                 }
                 R.id.btNavSettinds -> {

@@ -2,7 +2,7 @@ package com.example.notes2tab.fragments
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,22 +13,28 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.example.notes2tab.R
-import com.example.notes2tab.databinding.FragmentN2TBinding
+import com.example.notes2tab.databinding.FragmentCameraBinding
+import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class N2TFragment : Fragment() {
+class CameraFragment : Fragment() {
 
-    private lateinit var binding: FragmentN2TBinding
+    private lateinit var navController: NavController
+    private lateinit var binding: FragmentCameraBinding
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navController = findNavController()
 
         if (permissionsGranted()) {
             startCamera()
@@ -37,6 +43,7 @@ class N2TFragment : Fragment() {
         }
 
         binding.imageCaptureButton.setOnClickListener { takePhoto() }
+        binding.ibtBack.setOnClickListener { navController.popBackStack() }
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
@@ -44,11 +51,13 @@ class N2TFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentN2TBinding.inflate(inflater, container, false)
+        binding = FragmentCameraBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    private fun takePhoto() {}
+    private fun takePhoto() {
+
+    }
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
@@ -117,7 +126,7 @@ class N2TFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = N2TFragment()
+        fun newInstance() = CameraFragment()
         private const val TAG = "CameraX"
         private const val REQUESTED_PERMISSION = Manifest.permission.CAMERA
     }

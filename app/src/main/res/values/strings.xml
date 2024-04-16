@@ -28,4 +28,6 @@
     <string name="toast_msg_existence_of_email_true">A user with such an email already exists.</string>
     <string name="toast_msg_existence_of_email_false">There is no user with such mail.</string>
     <string name="toast_msg_permission_request_denied">Permission request denied.</string>
+    <string name="use_photo">Use photo</string>
+    <string name="reshoot">Reshoot</string>
 </resources>

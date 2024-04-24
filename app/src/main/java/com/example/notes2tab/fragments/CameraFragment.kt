@@ -1,9 +1,13 @@
 package com.example.notes2tab.fragments
 
 import android.Manifest
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,6 +26,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.notes2tab.R
 import com.example.notes2tab.databinding.FragmentCameraBinding
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -31,6 +37,8 @@ class CameraFragment : Fragment() {
     private lateinit var binding: FragmentCameraBinding
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
+    private var photoUri: Uri? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,7 +50,11 @@ class CameraFragment : Fragment() {
             requestPermissions()
         }
 
-        binding.imageCaptureButton.setOnClickListener { takePhoto() }
+        binding.imageCaptureButton.setOnClickListener {
+            context?.contentResolver?.let { contentResolver ->
+                takePhoto(contentResolver)
+            }
+        }
         binding.ibtBack.setOnClickListener { navController.popBackStack() }
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
@@ -55,8 +67,48 @@ class CameraFragment : Fragment() {
         return binding.root
     }
 
-    private fun takePhoto() {
+    private fun takePhoto(contentResolver: ContentResolver) {
+        val imageCapture = imageCapture ?: return
 
+        // Create time stamped name and MediaStore entry.
+        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
+            .format(System.currentTimeMillis())
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
+            }
+        }
+
+        val outputOptions = ImageCapture.OutputFileOptions
+            .Builder(contentResolver,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                contentValues)
+            .build()
+
+        // Настройка прослушивателя захвата изображений, который запускается после того, как фотография была сделана
+        imageCapture.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(requireContext()),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    photoUri = output.savedUri // Сохраняем URI сделанной фотографии
+
+                    // Передача URI в PreviewFragment через Bundle
+                    val bundle = Bundle().apply {
+                        putParcelable("photoUri", photoUri)
+                    }
+
+                    // Навигация к PreviewFragment
+                    navController.navigate(R.id.action_CameraFragment_to_previewPhotoFragment, bundle)
+                }
+
+                override fun onError(exc: ImageCaptureException) {
+                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                }
+            }
+        )
     }
 
     private fun startCamera() {
@@ -73,14 +125,19 @@ class CameraFragment : Fragment() {
                     it.setSurfaceProvider(binding.previewView.surfaceProvider)
                 }
 
-            // Делаем заднюю камеру дефолтной
+            imageCapture = ImageCapture.Builder()
+                .build()
+
+            // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
+                // Отмените привязку вариантов использования перед повторной привязкой
                 cameraProvider.unbindAll()
 
+                // Привязать варианты использования к камере
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview)
+                    this, cameraSelector, preview, imageCapture)
 
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
@@ -127,6 +184,7 @@ class CameraFragment : Fragment() {
 
     companion object {
         fun newInstance() = CameraFragment()
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val TAG = "CameraX"
         private const val REQUESTED_PERMISSION = Manifest.permission.CAMERA
     }

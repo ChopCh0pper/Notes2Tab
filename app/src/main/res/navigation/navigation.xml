@@ -43,5 +43,14 @@
         android:id="@+id/previewPhotoFragment"
         android:name="com.example.notes2tab.fragments.PreviewPhotoFragment"
         android:label="fragment_preview_photo"
-        tools:layout="@layout/fragment_preview_photo" />
+        tools:layout="@layout/fragment_preview_photo" >
+        <action
+            android:id="@+id/action_previewPhotoFragment_to_tabsFragment"
+            app:destination="@id/tabsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tabsFragment"
+        android:name="com.example.notes2tab.fragments.TabsFragment"
+        android:label="fragment_tabs"
+        tools:layout="@layout/fragment_tabs" />
 </navigation>

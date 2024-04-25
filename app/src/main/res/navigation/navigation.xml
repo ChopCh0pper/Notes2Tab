@@ -16,7 +16,7 @@
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <fragment
-        android:id="@+id/CameraFragment"
+        android:id="@+id/cameraFragment"
         android:name="com.example.notes2tab.fragments.CameraFragment"
         android:label="fragment_camera"
         tools:layout="@layout/fragment_camera" >

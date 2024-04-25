@@ -16,10 +16,14 @@
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <fragment
-        android:id="@+id/N2TFragment"
-        android:name="com.example.notes2tab.fragments.N2TFragment"
-        android:label="fragment_n2_t"
-        tools:layout="@layout/fragment_n2_t" />
+        android:id="@+id/CameraFragment"
+        android:name="com.example.notes2tab.fragments.CameraFragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" >
+        <action
+            android:id="@+id/action_CameraFragment_to_previewPhotoFragment"
+            app:destination="@id/previewPhotoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.notes2tab.fragments.SettingsFragment"
@@ -30,4 +34,23 @@
         android:name="com.example.notes2tab.fragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/galleryFragment"
+        android:name="com.example.notes2tab.fragments.GalleryFragment"
+        android:label="fragment_gallery"
+        tools:layout="@layout/fragment_gallery" />
+    <fragment
+        android:id="@+id/previewPhotoFragment"
+        android:name="com.example.notes2tab.fragments.PreviewPhotoFragment"
+        android:label="fragment_preview_photo"
+        tools:layout="@layout/fragment_preview_photo" >
+        <action
+            android:id="@+id/action_previewPhotoFragment_to_tabsFragment"
+            app:destination="@id/tabsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tabsFragment"
+        android:name="com.example.notes2tab.fragments.TabsFragment"
+        android:label="fragment_tabs"
+        tools:layout="@layout/fragment_tabs" />
 </navigation>

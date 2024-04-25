@@ -1,19 +1,21 @@
 package com.example.notes2tab
 
+import android.content.DialogInterface
+import android.icu.text.LocaleDisplayNames.DialectHandling
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     private lateinit var btNav: BottomNavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -31,12 +33,11 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.btNavN2T -> {
-                    navController.navigate(R.id.N2TFragment)
+                    createAlert()
                     true
                 }
                 R.id.btNavSettinds -> {
                     navController.navigate(R.id.settingsFragment)
-                    Toast.makeText(this, "dede", Toast.LENGTH_LONG).show()
                     true
                 }
                 R.id.btNavProfile -> {
@@ -46,5 +47,18 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+    private fun createAlert(){
+        val builder = AlertDialog.Builder(this);
+        builder.setMessage((R.string.choose_method_for_conversion))
+        builder.setPositiveButton("Camera") { dialog, which ->
+            navController.navigate(R.id.cameraFragment)
+        }
+
+        builder.setNeutralButton("Gallery"){ dialog, which ->
+            navController.navigate(R.id.galleryFragment)
+        }
+
+        builder.show()
     }
 }

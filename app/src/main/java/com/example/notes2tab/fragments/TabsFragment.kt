@@ -32,7 +32,7 @@ class TabsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTabsBinding.inflate(inflater, container, false)
-        rootView = binding.root // Assign rootView here
+        rootView = binding.root
         return rootView
     }
 
@@ -44,19 +44,12 @@ class TabsFragment : Fragment() {
     }
 
     private fun drawTab() {
-        // Получение данных для отрисовки табулатуры
         val tabData = stringTabParser.parseFile("kuzne4ik")
+        val screenWidth = resources.displayMetrics.widthPixels // Получение ширины экрана
 
-        tabDrawer.setDigitSize(80, 80)
-
-        // Отрисовка табулатуры и получение Bitmap
-        val bitmap = tabDrawer.drawTab(tabData, 0, 0)
-
-        // Создание ImageView и установка Bitmap в него
+        val bitmap = tabDrawer.drawTab(tabData, screenWidth)
         val imageView = ImageView(requireContext())
         imageView.setImageBitmap(bitmap)
-
-        // Добавление ImageView в FrameLayout
         rootView.findViewById<FrameLayout>(R.id.container)?.addView(imageView)
     }
 

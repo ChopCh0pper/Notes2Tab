@@ -1,64 +1,97 @@
+
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.PictureDrawable
-import com.caverock.androidsvg.SVG
-import com.example.notes2tab.R
-import java.io.InputStream
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.Typeface
 
 class TabDrawer(private val context: Context) {
 
-    private var digitWidth: Int = 0
-    private var digitHeight: Int = 0
-    private lateinit var canvas: Canvas
-    private lateinit var bitmap: Bitmap
+    private lateinit var paint: Paint
+    private var maxCharsPerLine = 0
+    private var prevMaxChars = 0
 
     // Отрисовка табулатуры
-    fun drawTab(tabData: Array<Array<String>>, offsetX: Int, offsetY: Int): Bitmap {
-        // Создаем Bitmap с нужными размерами
-        val canvasWidth = tabData[0].size * digitWidth
-        val canvasHeight = tabData.size * digitHeight
-        bitmap = Bitmap.createBitmap(canvasWidth, canvasHeight, Bitmap.Config.ARGB_8888)
-        canvas = Canvas(bitmap)
+    fun drawTab(tabData: List<String>, screenWidth: Int): Bitmap {
+        val lineHeight = 80 // Высота строки текста
+        val linesPerBar = 6 // Количество строк на один такт
 
-        for (i in tabData.indices) {
-            for (j in tabData[i].indices) {
-                val digit = tabData[i][j]
-                val svgInputStream: InputStream = context.resources.openRawResource(getSvgResourceId(digit))
-                val svg: SVG = SVG.getFromInputStream(svgInputStream)
-                val drawable = PictureDrawable(svg.renderToPicture())
-                drawable.setBounds(
-                    offsetX + j * digitWidth,
-                    offsetY + i * digitHeight,
-                    offsetX + (j + 1) * digitWidth,
-                    offsetY + (i + 1) * digitHeight
-                )
-                drawable.draw(canvas)
+        maxCharsPerLine = estimateMaxCharsPerLine(screenWidth)
+
+        val bitmapHeight = tabData.size * lineHeight * linesPerBar
+
+        val bitmap = Bitmap.createBitmap(screenWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        paint.textSize = 60f
+        paint.typeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
+
+        var y = lineHeight
+
+        for (lineIndex in tabData.indices) {
+            val line = tabData[lineIndex]
+
+
+            val parts = splitString(line, maxCharsPerLine)
+            for (part in parts) {
+                canvas.drawText(part, 0f, y.toFloat(), paint)
+                y += lineHeight
+            }
+
+            // Добавляем пустые строки между тактами
+            if (lineIndex % linesPerBar == linesPerBar - 1) {
+                y += lineHeight * 2 // Добавляем две пустые строки
             }
         }
+
         return bitmap
     }
 
-    // Установка размеров векторного изображения цифры
-    fun setDigitSize(width: Int, height: Int) {
-        digitWidth = width
-        digitHeight = height
+    private fun estimateMaxCharsPerLine(screenWidth: Int): Int {
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        paint.textSize = 60f
+        paint.typeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
+
+
+        val textBounds = Rect()
+
+        var maxChars = 100
+        var textWidth: Float
+
+
+        while (true) {
+            val testText = "X".repeat(maxChars)
+            paint.getTextBounds(testText, 0, testText.length, textBounds)
+            textWidth = textBounds.width().toFloat()
+
+            if (textWidth >= screenWidth) {
+                break
+            }
+
+            maxChars += 100
+        }
+
+        while (true) {
+            val testText = "X".repeat(maxChars)
+            paint.getTextBounds(testText, 0, testText.length, textBounds)
+            textWidth = textBounds.width().toFloat()
+
+            if (textWidth >= screenWidth) {
+                maxChars--
+            } else {
+                return maxChars
+            }
+        }
     }
 
-    // Получение идентификатора ресурса SVG изображения
-    private fun getSvgResourceId(digit: String): Int {
-        return when (digit) {
-            "0" -> R.raw.digit_0
-            "1" -> R.raw.digit_1
-            "2" -> R.raw.digit_2
-            "3" -> R.raw.digit_3
-            "4" -> R.raw.digit_4
-            "5" -> R.raw.digit_5
-            "6" -> R.raw.digit_6
-            "7" -> R.raw.digit_7
-            "8" -> R.raw.digit_8
-            "9" -> R.raw.digit_9
-            else -> R.raw.test
+    private fun splitString(input: String, maxLength: Int): List<String> {
+        val parts = mutableListOf<String>()
+        var index = 0
+        while (index < input.length) {
+            parts.add(input.substring(index, Math.min(index + maxLength, input.length)))
+            index += maxLength
         }
+        return parts
     }
 }

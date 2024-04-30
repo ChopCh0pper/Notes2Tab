@@ -1,12 +1,14 @@
 package com.example.notes2tab.drawTabs
 
 import android.content.Context
+import java.io.BufferedReader
+import java.io.InputStreamReader
+
 class StringTabParser(private val context: Context) {
 
-
-    fun parseFile(filePath: String): Array<Array<String>> {
+    fun parseFile(filePath: String): List<String> {
         val inputStream = context.resources.openRawResource(context.resources.getIdentifier(filePath, "raw", context.packageName))
-        val reader = inputStream.bufferedReader()
+        val reader = BufferedReader(InputStreamReader(inputStream))
         val lines = mutableListOf<String>()
 
         // Чтение строк из файла
@@ -17,17 +19,6 @@ class StringTabParser(private val context: Context) {
         }
 
         reader.close()
-
-        // Создание двумерного массива, заполненного пробелами
-        val table = Array(lines.size) { Array(lines[0].length) { " " } }
-
-        // Заполнение массива значениями из файла
-        for (i in lines.indices) {
-            for (j in lines[i].indices) {
-                table[i][j] = lines[i][j].toString()
-            }
-        }
-
-        return table
+        return lines
     }
 }

@@ -5,9 +5,30 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.example.notes2tab.R
+import com.example.notes2tab.databinding.FragmentProfileBinding
+import com.example.notes2tab.databinding.FragmentTabsBinding
+import com.example.notes2tab.utils.AUTH
 
 class ProfileFragment : Fragment() {
+    private lateinit var binding: FragmentProfileBinding
+    private lateinit var navController: NavController
+
+    override fun onStart() {
+        super.onStart()
+        // Проверяем входил ли юзер до этого, если да, то перекидываем на фрагмент UserFragment
+        val currentUser = AUTH.currentUser
+        if (currentUser != null) { navController.navigate(R.id.action_profileFragment_to_userFragment) }
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        navController = findNavController()
+
+        binding.btLogIn.setOnClickListener { navController.navigate(R.id.action_profileFragment_to_logInFragment) }
+        binding.btSignUp.setOnClickListener { navController.navigate(R.id.action_profileFragment_to_signUpFragment) }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -16,12 +37,11 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) = ProfileFragment()
+        fun newInstance() = ProfileFragment()
     }
 }

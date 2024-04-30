@@ -1,4 +1,4 @@
-package com.example.notes2tab.parser
+package com.example.notes2tab.drawTabs
 
 import android.content.Context
 class StringTabParser(private val context: Context) {

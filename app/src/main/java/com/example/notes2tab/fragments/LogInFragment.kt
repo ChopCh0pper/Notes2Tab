@@ -13,6 +13,7 @@ import com.example.notes2tab.databinding.FragmentLogInBinding
 import com.example.notes2tab.utils.AUTH
 import com.example.notes2tab.utils.invalidityMessage
 import com.example.notes2tab.utils.isEmailValid
+import com.google.firebase.auth.FirebaseUser
 
 class LogInFragment : Fragment() {
     private lateinit var binding: FragmentLogInBinding
@@ -27,18 +28,30 @@ class LogInFragment : Fragment() {
 
         btLogIn.setOnClickListener {
             if (etEmail.isEmailValid() && etPass.text.isNotEmpty()) {
-                logIn(etEmail.text.toString(), etPass.text.toString())
+
+                logIn(etEmail.text.toString(), etPass.text.toString()) {
+                    //Проверяем верифицировался ли пользователь
+                    if (it.isEmailVerified) navController.navigate(R.id.action_logInFragment_to_userFragment)
+                    else {
+                        Toast.makeText(requireContext(),
+                            getText(R.string.confirm_email),
+                            Toast.LENGTH_SHORT).show()
+                        AUTH.signOut()
+                    }
+                }
+
             } else {
                 invalidityMessage(etEmail, etPass, requireContext())
             }
         }
     }
 
-    private fun logIn(email: String, pass: String) {
+    private fun logIn(email: String, pass: String, callBack: (FirebaseUser) -> Unit) {
         AUTH.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    navController.navigate(R.id.action_logInFragment_to_userFragment)
+                    val currentUser = AUTH.currentUser
+                    callBack(currentUser!!)
                 } else {
                     Toast.makeText(
                         requireContext(),

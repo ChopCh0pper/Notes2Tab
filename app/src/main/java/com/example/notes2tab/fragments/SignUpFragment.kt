@@ -1,17 +1,19 @@
 package com.example.notes2tab.fragments
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.notes2tab.R
 import com.example.notes2tab.databinding.FragmentSignUpBinding
-import com.example.notes2tab.utils.AUTH
 import com.example.notes2tab.utils.*
+
 
 class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
@@ -37,7 +39,10 @@ class SignUpFragment : Fragment() {
         AUTH.createUserWithEmailAndPassword(email, pass)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    navController.navigate(R.id.action_signUpFragment_to_userFragment)
+                    val currentUser = AUTH.currentUser
+                    currentUser?.sendEmailVerification()
+                    createDialog()
+                    navController.navigate(R.id.action_signUpFragment_to_logInFragment)
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -46,6 +51,18 @@ class SignUpFragment : Fragment() {
                     ).show()
                 }
             }
+    }
+
+    //уведомление об успешной регистрации и о требовании подтвердить почту
+    private fun createDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(getText(R.string.toast_msg_signup_successfully))
+            .setMessage(getText(R.string.confirm_email))
+            .setPositiveButton(getText(R.string.ok)) {
+                    dialog, id ->  dialog.cancel()
+            }
+        val alertDialog = builder.create()
+        alertDialog.show()
     }
 
     override fun onCreateView(

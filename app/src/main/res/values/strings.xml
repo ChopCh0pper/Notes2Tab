@@ -31,5 +31,6 @@
     <string name="use_photo">Use photo</string>
     <string name="reshoot">Reshoot</string>
     <string name="choose_method_for_conversion">Choose the method of sending the photos that we need to convert</string>
+    <string name="ok">OK</string>
 
 </resources>

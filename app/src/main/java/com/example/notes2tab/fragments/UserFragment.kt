@@ -1,6 +1,7 @@
 package com.example.notes2tab.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,17 +16,15 @@ import com.google.firebase.auth.FirebaseUser
 class UserFragment : Fragment() {
     private lateinit var binding: FragmentUserBinding
     private lateinit var navController: NavController
-    private var currentUser: FirebaseUser? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
-        currentUser = AUTH.currentUser
         navController = findNavController()
-
-        tvUserName.text = currentUser?.email
+        val currentUser = AUTH.currentUser
+        tvUserName.text = currentUser!!.email
         btSignOut.setOnClickListener { signOut() }
     }
 

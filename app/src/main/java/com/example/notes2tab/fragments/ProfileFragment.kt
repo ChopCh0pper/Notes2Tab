@@ -20,7 +20,7 @@ class ProfileFragment : Fragment() {
         super.onStart()
         // Проверяем входил ли юзер до этого, если да, то перекидываем на фрагмент UserFragment
         val currentUser = AUTH.currentUser
-        if (currentUser != null) { navController.navigate(R.id.action_profileFragment_to_userFragment) }
+        if (currentUser != null && currentUser.isEmailVerified) { navController.navigate(R.id.action_profileFragment_to_userFragment) }
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

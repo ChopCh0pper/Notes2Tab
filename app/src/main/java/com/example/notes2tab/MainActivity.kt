@@ -2,6 +2,7 @@ package com.example.notes2tab
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
@@ -18,6 +19,8 @@ class MainActivity : AppCompatActivity() {
 
         btNav = findViewById<BottomNavigationView>(R.id.btNavigation)
         navController = findNavController(R.id.nav_host_fragment)
+        val iconColorStates = ContextCompat.getColorStateList(this, R.color.colors_list_state)
+        btNav.itemIconTintList = iconColorStates
 
         btNav.setOnItemSelectedListener { item ->
             when(item.itemId) {

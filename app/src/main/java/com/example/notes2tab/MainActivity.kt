@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         btNav = findViewById<BottomNavigationView>(R.id.btNavigation)
         navController = findNavController(R.id.nav_host_fragment)
 
+        //Слушатель выбранного элемента на BottomNavigationView
         btNav.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.btNavHome -> {
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.btNavN2T -> {
-                    navController.navigate(R.id.N2TFragment)
+                    navController.navigate(R.id.CameraFragment)
                     true
                 }
                 R.id.btNavSettinds -> {

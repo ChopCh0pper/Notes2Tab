@@ -1,12 +1,11 @@
 <resources>
     <string name="app_name">Notes2Tab</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="main_fragment">M</string>
-    <string name="search_fragment">S</string>
-    <string name="n2t_fragment">N2T</string>
-    <string name="settings_fragment">S</string>
-    <string name="profile_fragment">P</string>
-    <string name="profile_description">Sign in to fully use the app</string>
+    <string name="main_fragment">M</string>//test
+    <string name="search_fragment">S</string>//test
+    <string name="n2t_fragment">N2T</string>//test
+    <string name="settings_fragment">S</string>//test
+    <string name="profile_fragment">P</string>//test
     <string name="log_in">Log in</string>
     <string name="sign_up">Sign up</string>
     <string name="et_hint_email">Email</string>
@@ -17,9 +16,7 @@
     <string name="resend">Resend</string>
     <string name="personal">Personal</string>
     <string name="favorites">Favorites</string>
-    <string name="my_recipes">My recipes</string>
     <string name="settings">Settings</string>
-    <string name="about_us">About us</string>
     <string name="exit">Exit</string>
     <string name="toast_msg_validityCheck">Invalid email or password.</string>
     <string name="toast_msg_signup_successfully">Account created successfully.</string>
@@ -30,4 +27,7 @@
     <string name="toast_msg_change_name_field">The field must not be empty.</string>
     <string name="toast_msg_existence_of_email_true">A user with such an email already exists.</string>
     <string name="toast_msg_existence_of_email_false">There is no user with such mail.</string>
+    <string name="toast_msg_permission_request_denied">Permission request denied.</string>
+    <string name="use_photo">Use photo</string>
+    <string name="reshoot">Reshoot</string>
 </resources>

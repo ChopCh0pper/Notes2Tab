@@ -8,8 +8,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.example.notes2tab.R
 class GalleryFragment : Fragment() {
+
+    private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -18,7 +23,9 @@ class GalleryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        navController = findNavController()
         openGallery()
+        navController.navigate(R.id.tabsFragment)
         return inflater.inflate(R.layout.fragment_gallery, container, false)
     }
 

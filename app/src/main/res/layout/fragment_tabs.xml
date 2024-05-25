@@ -2,14 +2,23 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:screenOrientation="landscape">
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:screenOrientation="landscape"
-        android:id="@+id/container"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <!-- Добавление Toolbar -->
+        <include layout="@layout/menu_custom_layout" />
+
+
+        <!-- FrameLayout для фрагмента -->
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </FrameLayout>
+
+    </LinearLayout>
 </ScrollView>

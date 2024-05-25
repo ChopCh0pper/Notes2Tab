@@ -1,15 +1,12 @@
 package com.example.notes2tab
 
-import android.content.DialogInterface
-import android.icu.text.LocaleDisplayNames.DialectHandling
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -40,6 +37,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.btNavN2T -> {
                     createAlert()
+
                     true
                 }
                 R.id.btNavSettinds -> {
@@ -55,13 +53,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun createAlert(){
-        val builder = AlertDialog.Builder(this);
+        val builder = AlertDialog.Builder(this)
         builder.setMessage((R.string.choose_method_for_conversion))
         builder.setPositiveButton("Camera") { dialog, which ->
             navController.navigate(R.id.cameraFragment)
+            btNav.isInvisible = true
         }
 
         builder.setNeutralButton("Gallery"){ dialog, which ->
+            btNav.isInvisible = true
             navController.navigate(R.id.galleryFragment)
         }
 

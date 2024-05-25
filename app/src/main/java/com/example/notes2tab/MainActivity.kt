@@ -5,8 +5,11 @@ import android.icu.text.LocaleDisplayNames.DialectHandling
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -21,6 +24,8 @@ class MainActivity : AppCompatActivity() {
 
         btNav = findViewById<BottomNavigationView>(R.id.btNavigation)
         navController = findNavController(R.id.nav_host_fragment)
+        val iconColorStates = ContextCompat.getColorStateList(this, R.color.colors_list_state)
+        btNav.itemIconTintList = iconColorStates
 
         //Слушатель выбранного элемента на BottomNavigationView
         btNav.setOnItemSelectedListener { item ->

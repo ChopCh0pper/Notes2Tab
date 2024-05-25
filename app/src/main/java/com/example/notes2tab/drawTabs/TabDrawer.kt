@@ -1,97 +1,105 @@
-
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.Typeface
+import android.util.Log
 
 class TabDrawer(private val context: Context) {
 
-    private lateinit var paint: Paint
-    private var maxCharsPerLine = 0
-    private var prevMaxChars = 0
+    private val textSize = 45f // Размер текста
+    private val textColor = Color.BLACK // Цвет текста
+    private val paint = Paint()
 
-    // Отрисовка табулатуры
+    init {
+        paint.textSize = textSize
+        paint.color = textColor
+        paint.typeface = Typeface.MONOSPACE // Установка моноширинного шрифта
+    }
+
     fun drawTab(tabData: List<String>, screenWidth: Int): Bitmap {
-        val lineHeight = 80 // Высота строки текста
-        val linesPerBar = 6 // Количество строк на один такт
-
-        maxCharsPerLine = estimateMaxCharsPerLine(screenWidth)
-
-        val bitmapHeight = tabData.size * lineHeight * linesPerBar
+        val lineHeight = textSize
+        val bitmapHeight = 2000 // Исходная высота битмапа (можно настроить по вашему усмотрению)
+        var y = textSize
 
         val bitmap = Bitmap.createBitmap(screenWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint.textSize = 60f
-        paint.typeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
+        val maxCharsPerLine = findMaxCharsPerLine(screenWidth)
 
-        var y = lineHeight
+        // Список для хранения обрезанных частей строк
+        val remainingLines = mutableListOf<String>()
 
-        for (lineIndex in tabData.indices) {
-            val line = tabData[lineIndex]
+        // Список для хранения кусков строк в зависимости от их индекса
+        val lineChunks = mutableListOf<MutableList<String>>()
 
+        // Инициализация списков для каждой строки
+        for (i in tabData.indices) {
+            lineChunks.add(mutableListOf())
+        }
 
-            val parts = splitString(line, maxCharsPerLine)
-            for (part in parts) {
-                canvas.drawText(part, 0f, y.toFloat(), paint)
-                y += lineHeight
-            }
+        // Обработка строк и сбор кусков в списки
+        for ((index, line) in tabData.withIndex()) {
+            var remainingLine = line
 
-            // Добавляем пустые строки между тактами
-            if (lineIndex % linesPerBar == linesPerBar - 1) {
-                y += lineHeight * 2 // Добавляем две пустые строки
+            while (remainingLine.isNotEmpty()) {
+                val chunkSize = Math.min(remainingLine.length, maxCharsPerLine)
+                var chunk = remainingLine.take(chunkSize)
+
+                if (chunk.length == maxCharsPerLine && remainingLine.length > chunkSize) {
+                    chunk += " " // Добавляем пробел, если это не конец строки
+                }
+
+                // Добавление куска в соответствующий список
+                lineChunks[index].add(chunk)
+
+                remainingLine = remainingLine.drop(chunkSize)
             }
         }
 
+        // Отрисовка кусков поочередно
+        var lineCounter = 0
+        for (i in 0 until maxCharsPerLine) {
+            for (line in lineChunks) {
+                if (i < line.size) {
+                    val chunk = line[i]
+
+                    if (y + lineHeight <= bitmapHeight) {
+                        canvas.drawText(chunk, 0f, y, paint)
+                    } else {
+                        remainingLines.add(chunk)
+                    }
+
+                    y += lineHeight
+                    lineCounter++
+
+                    // Вставляем пробел после каждых 6 строк
+                    if (lineCounter % 6 == 0) {
+                        y += lineHeight
+                    }
+                }
+            }
+        }
         return bitmap
     }
 
-    private fun estimateMaxCharsPerLine(screenWidth: Int): Int {
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint.textSize = 60f
-        paint.typeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
+    private fun findMaxCharsPerLine(screenWidth: Int): Int {
+        var low = 1
+        var high = screenWidth
 
+        while (low < high) {
+            val mid = low + (high - low) / 2
+            val testString = "X".repeat(mid) // Создаем строку из mid символов
+            val textWidth = paint.measureText(testString) // Измеряем ширину этой строки
+            Log.d("TabDrawer", "Test string: $testString, Text width: $textWidth, Screen width: $screenWidth")
 
-        val textBounds = Rect()
-
-        var maxChars = 100
-        var textWidth: Float
-
-
-        while (true) {
-            val testText = "X".repeat(maxChars)
-            paint.getTextBounds(testText, 0, testText.length, textBounds)
-            textWidth = textBounds.width().toFloat()
-
-            if (textWidth >= screenWidth) {
-                break
-            }
-
-            maxChars += 100
-        }
-
-        while (true) {
-            val testText = "X".repeat(maxChars)
-            paint.getTextBounds(testText, 0, testText.length, textBounds)
-            textWidth = textBounds.width().toFloat()
-
-            if (textWidth >= screenWidth) {
-                maxChars--
+            if (textWidth > screenWidth) {
+                high = mid - 1
             } else {
-                return maxChars
+                low = mid + 1
             }
         }
-    }
 
-    private fun splitString(input: String, maxLength: Int): List<String> {
-        val parts = mutableListOf<String>()
-        var index = 0
-        while (index < input.length) {
-            parts.add(input.substring(index, Math.min(index + maxLength, input.length)))
-            index += maxLength
-        }
-        return parts
+        return low
     }
 }

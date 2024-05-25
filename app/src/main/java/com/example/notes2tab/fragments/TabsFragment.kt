@@ -1,6 +1,7 @@
 package com.example.notes2tab.fragments
 
 import TabDrawer
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,12 +20,15 @@ class TabsFragment : Fragment() {
     private lateinit var rootView: View
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         //путь в raw файлах, для заглушки
         stringTabParser = StringTabParser(requireContext())
         tabDrawer = TabDrawer(requireContext())
+
+
     }
 
     override fun onCreateView(
@@ -33,6 +37,8 @@ class TabsFragment : Fragment() {
     ): View? {
         binding = FragmentTabsBinding.inflate(inflater, container, false)
         rootView = binding.root
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
         return rootView
     }
 

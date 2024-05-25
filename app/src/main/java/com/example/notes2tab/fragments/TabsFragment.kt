@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -24,7 +23,7 @@ class TabsFragment : Fragment() {
     private lateinit var tabDrawer: TabDrawer
     private lateinit var rootView: View
     private lateinit var navController: NavController
-    private lateinit var btNav: BottomNavigationView
+    private var btNav: BottomNavigationView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +32,7 @@ class TabsFragment : Fragment() {
 
         // Установка флага для использования меню в фрагменте
         setHasOptionsMenu(true)
+
     }
 
     override fun onCreateView(
@@ -41,14 +41,20 @@ class TabsFragment : Fragment() {
     ): View? {
         binding = FragmentTabsBinding.inflate(inflater, container, false)
         rootView = binding.root
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        navController = findNavController()
 
+        // Initialize BottomNavigationView
+        btNav = requireActivity().findViewById(R.id.btNavigation)
+
+        // Set screen orientation
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        btNav?.visibility = View.GONE
         return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        navController = findNavController()
 
         rootView.findViewById<ImageView>(R.id.back_button)?.setOnClickListener {
             onBackButtonClick()
@@ -77,11 +83,9 @@ class TabsFragment : Fragment() {
     }
 
     private fun onBackButtonClick() {
-
         navController.navigate(R.id.homeFragment)
-        btNav = requireActivity().findViewById(R.id.btNavigation)
-        btNav.isVisible = true
-
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        btNav?.visibility = View.VISIBLE // Показать BottomNavigationView при возврате
     }
 
     private fun onSettingsButtonClick() {

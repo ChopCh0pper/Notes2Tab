@@ -1,14 +1,12 @@
 package com.example.notes2tab
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.isInvisible
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val iconColorStates = ContextCompat.getColorStateList(this, R.color.colors_list_state)
         btNav.itemIconTintList = iconColorStates
 
-        //Слушатель выбранного элемента на BottomNavigationView
+        // Слушатель выбранного элемента на BottomNavigationView
         btNav.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.btNavHome -> {
@@ -39,7 +37,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.btNavN2T -> {
                     createAlert()
-
                     true
                 }
                 R.id.btNavSettinds -> {
@@ -54,16 +51,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    private fun createAlert(){
+
+    private fun createAlert() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage((R.string.choose_method_for_conversion))
         builder.setPositiveButton("Camera") { dialog, which ->
+
+            btNav.visibility = View.GONE
             navController.navigate(R.id.cameraFragment)
-            btNav.isInvisible = true
         }
 
-        builder.setNeutralButton("Gallery"){ dialog, which ->
-            btNav.isInvisible = true
+        builder.setNeutralButton("Gallery") { dialog, which ->
+
+            btNav.visibility = View.GONE
             navController.navigate(R.id.galleryFragment)
         }
 

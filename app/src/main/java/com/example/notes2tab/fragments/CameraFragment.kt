@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,11 +20,11 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.notes2tab.R
 import com.example.notes2tab.databinding.FragmentCameraBinding
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
@@ -39,6 +38,18 @@ class CameraFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private var photoUri: Uri? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        cameraExecutor = Executors.newSingleThreadExecutor() // Инициализация здесь
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentCameraBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,27 +67,18 @@ class CameraFragment : Fragment() {
             }
         }
         binding.ibtBack.setOnClickListener { navController.popBackStack() }
-        cameraExecutor = Executors.newSingleThreadExecutor()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCameraBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     private fun takePhoto(contentResolver: ContentResolver) {
         val imageCapture = imageCapture ?: return
 
-        // Create time stamped name and MediaStore entry.
+        // Создание имени с временной меткой и записи в MediaStore.
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
             .format(System.currentTimeMillis())
         val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                 put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
             }
         }
@@ -128,7 +130,7 @@ class CameraFragment : Fragment() {
             imageCapture = ImageCapture.Builder()
                 .build()
 
-            // Select back camera as a default
+            // Выбираем заднюю камеру по умолчанию
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
@@ -139,7 +141,7 @@ class CameraFragment : Fragment() {
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture)
 
-            } catch(exc: Exception) {
+            } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
 
@@ -150,11 +152,11 @@ class CameraFragment : Fragment() {
         activityResultLauncher.launch(REQUESTED_PERMISSION)
     }
 
-    //Метод для вызова активности которая запрашивает разрешение у пользователя
+    // Метод для вызова активности которая запрашивает разрешение у пользователя
     private val activityResultLauncher =
         registerForActivityResult(
-            ActivityResultContracts.RequestPermission())
-        { permission ->
+            ActivityResultContracts.RequestPermission()
+        ) { permission ->
 
             if (!permission) {
                 Toast.makeText(requireContext(),
@@ -165,16 +167,14 @@ class CameraFragment : Fragment() {
             }
         }
 
-    private fun permissionsGranted(): Boolean{ //Проверка наличия разрешений на использование камеры
+    private fun permissionsGranted(): Boolean { // Проверка наличия разрешений на использование камеры
         if (ContextCompat.checkSelfPermission(
-            requireContext(), REQUESTED_PERMISSION) == PackageManager.PERMISSION_GRANTED)
+                requireContext(), REQUESTED_PERMISSION
+            ) == PackageManager.PERMISSION_GRANTED
+        )
             return true
 
         return false
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onDestroy() {

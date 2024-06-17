@@ -1,14 +1,13 @@
 package com.example.notes2tab
 
+import androidx.appcompat.app.AppCompatActivity
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.example.notes2tab.utils.initFirebase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -23,8 +22,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         initFirebase()
-
-
 
         btNav = findViewById<BottomNavigationView>(R.id.btNavigation)
         navController = findNavController(R.id.nav_host_fragment)

@@ -1,13 +1,12 @@
 package com.example.notes2tab
 
-import android.content.DialogInterface
-import android.icu.text.LocaleDisplayNames.DialectHandling
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.notes2tab.utils.initFirebase
@@ -25,12 +24,18 @@ class MainActivity : AppCompatActivity() {
 
         initFirebase()
 
+
+
         btNav = findViewById<BottomNavigationView>(R.id.btNavigation)
         navController = findNavController(R.id.nav_host_fragment)
         val iconColorStates = ContextCompat.getColorStateList(this, R.color.colors_list_state)
         btNav.itemIconTintList = iconColorStates
 
-        //Слушатель выбранного элемента на BottomNavigationView
+        if (this.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+            btNav.visibility = View.GONE
+        }
+
+        // Слушатель выбранного элемента на BottomNavigationView
         btNav.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.btNavHome -> {
@@ -57,17 +62,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    private fun createAlert(){
-        val builder = AlertDialog.Builder(this);
+
+    private fun createAlert() {
+        val builder = AlertDialog.Builder(this)
         builder.setMessage((R.string.choose_method_for_conversion))
         builder.setPositiveButton("Camera") { dialog, which ->
+
+            btNav.visibility = View.GONE
             navController.navigate(R.id.cameraFragment)
         }
 
-        builder.setNeutralButton("Gallery"){ dialog, which ->
+        builder.setNeutralButton("Gallery") { dialog, which ->
+
+            btNav.visibility = View.GONE
             navController.navigate(R.id.galleryFragment)
         }
 
         builder.show()
     }
+
+
 }

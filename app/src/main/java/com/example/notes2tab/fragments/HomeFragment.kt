@@ -1,14 +1,11 @@
 package com.example.notes2tab.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
-import com.example.notes2tab.R
 import com.example.notes2tab.adapters.SongAdapter
 import com.example.notes2tab.dataModels.Song
 import com.example.notes2tab.databinding.FragmentHomeBinding

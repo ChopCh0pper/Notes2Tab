@@ -32,7 +32,6 @@ class TabsFragment : Fragment() {
 
         // Установка флага для использования меню в фрагменте
         setHasOptionsMenu(true)
-
     }
 
     override fun onCreateView(
@@ -42,12 +41,9 @@ class TabsFragment : Fragment() {
         binding = FragmentTabsBinding.inflate(inflater, container, false)
         rootView = binding.root
 
-        // Initialize BottomNavigationView
-        btNav = requireActivity().findViewById(R.id.btNavigation)
-
         // Set screen orientation
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        btNav?.visibility = View.GONE
+
         return rootView
     }
 
@@ -63,6 +59,10 @@ class TabsFragment : Fragment() {
         rootView.findViewById<ImageView>(R.id.settings)?.setOnClickListener {
             onSettingsButtonClick()
         }
+
+        btNav = requireActivity().findViewById(R.id.btNavigation)
+
+        btNav?.visibility = View.GONE // Hide BottomNavigationView
 
         // Вызов метода отрисовки табулатуры после создания представления
         drawTab()
@@ -85,7 +85,7 @@ class TabsFragment : Fragment() {
     private fun onBackButtonClick() {
         navController.navigate(R.id.homeFragment)
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        btNav?.visibility = View.VISIBLE // Показать BottomNavigationView при возврате
+        btNav?.visibility = View.VISIBLE // Show BottomNavigationView when returning to portrait mode
     }
 
     private fun onSettingsButtonClick() {

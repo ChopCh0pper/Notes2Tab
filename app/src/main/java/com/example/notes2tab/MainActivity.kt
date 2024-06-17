@@ -1,5 +1,6 @@
 package com.example.notes2tab
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -19,10 +20,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
         btNav = findViewById<BottomNavigationView>(R.id.btNavigation)
         navController = findNavController(R.id.nav_host_fragment)
         val iconColorStates = ContextCompat.getColorStateList(this, R.color.colors_list_state)
         btNav.itemIconTintList = iconColorStates
+
+        if (this.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+            btNav.visibility = View.GONE
+        }
 
         // Слушатель выбранного элемента на BottomNavigationView
         btNav.setOnItemSelectedListener { item ->
@@ -69,4 +76,6 @@ class MainActivity : AppCompatActivity() {
 
         builder.show()
     }
+
+
 }

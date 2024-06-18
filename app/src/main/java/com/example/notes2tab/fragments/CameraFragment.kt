@@ -1,6 +1,7 @@
 package com.example.notes2tab.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.pm.PackageManager
@@ -10,11 +11,13 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
@@ -113,6 +116,7 @@ class CameraFragment : Fragment() {
         )
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
@@ -130,7 +134,7 @@ class CameraFragment : Fragment() {
             imageCapture = ImageCapture.Builder()
                 .build()
 
-            // Выбираем заднюю камеру по умолчанию
+            // Устанавливаем заднюю камеру как дефолтную
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
@@ -138,15 +142,29 @@ class CameraFragment : Fragment() {
                 cameraProvider.unbindAll()
 
                 // Привязать варианты использования к камере
-                cameraProvider.bindToLifecycle(
+                val camera = cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture)
 
-            } catch (exc: Exception) {
+                val cameraControl = camera.cameraControl
+
+                // Добавление слушателя касаний для автофокусировки
+                binding.previewView.setOnTouchListener { _, event ->
+                    if (event.action == MotionEvent.ACTION_UP) {
+                        val factory = binding.previewView.meteringPointFactory
+                        val point = factory.createPoint(event.x, event.y)
+                        val action = FocusMeteringAction.Builder(point).build()
+                        cameraControl.startFocusAndMetering(action)
+                    }
+                    true
+                }
+
+            } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
 
         }, ContextCompat.getMainExecutor(requireContext()))
     }
+
 
     private fun requestPermissions() {
         activityResultLauncher.launch(REQUESTED_PERMISSION)

@@ -29,7 +29,7 @@ class SignUpFragment : Fragment() {
         btSignUp.setOnClickListener {
             if (etEmail.isEmailValid() && etPass.text.isNotEmpty()) {
                         createAccount(
-                            etEmail.text.toString(),
+                            etEmail.text.toString().trim(),
                             etPass.text.toString())
             } else { invalidityMessage(etEmail, etPass, requireContext()) }
         }

@@ -19,25 +19,3 @@ fun invalidityMessage(etEmail: EditText, etPass: EditText, context: Context) {
         Toast.LENGTH_SHORT
     ).show()
 }
-
-fun existenceOfMailMessage(existence: Boolean, etEmail: EditText, context: Context) {
-    etEmail.backgroundTintList = ColorStateList
-        .valueOf(ContextCompat.getColor(context, R.color.errorColor))
-    when (existence) {
-        true -> {
-            Toast.makeText(
-                context,
-                R.string.toast_msg_existence_of_email_true,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        false -> {
-            Toast.makeText(
-                context,
-                R.string.toast_msg_existence_of_email_false,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-}

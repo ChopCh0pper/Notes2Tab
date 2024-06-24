@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.notes2tab.R
 import com.example.notes2tab.databinding.FragmentLogInBinding
 import com.example.notes2tab.utils.AUTH
+import com.example.notes2tab.utils.initUser
 import com.example.notes2tab.utils.invalidityMessage
 import com.example.notes2tab.utils.isEmailValid
 import com.google.firebase.auth.FirebaseUser
@@ -35,7 +36,10 @@ class LogInFragment : Fragment() {
 
                 logIn(etEmail.text.toString().trim(), etPass.text.toString()) {
                     //Проверяем верифицировался ли пользователь
-                    if (it.isEmailVerified) navController.navigate(R.id.action_logInFragment_to_userFragment)
+                    if (it.isEmailVerified) {
+                        initUser()
+                        navController.navigate(R.id.action_logInFragment_to_userFragment)
+                    }
                     else {
                         Toast.makeText(requireContext(),
                             getText(R.string.confirm_email),

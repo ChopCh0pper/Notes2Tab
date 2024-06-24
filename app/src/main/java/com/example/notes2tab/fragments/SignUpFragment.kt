@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.notes2tab.R
+import com.example.notes2tab.dataModels.User
 import com.example.notes2tab.databinding.FragmentSignUpBinding
 import com.example.notes2tab.utils.*
 
@@ -39,8 +40,9 @@ class SignUpFragment : Fragment() {
         AUTH.createUserWithEmailAndPassword(email, pass)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val currentUser = AUTH.currentUser
-                    currentUser?.sendEmailVerification()
+                    val currentUser = AUTH.currentUser!!
+                    currentUser.sendEmailVerification()
+                    initializeUserInFirestore(currentUser.uid, currentUser.email!!)
                     createDialog()
                     navController.navigate(R.id.action_signUpFragment_to_logInFragment)
                 } else {
@@ -53,13 +55,20 @@ class SignUpFragment : Fragment() {
             }
     }
 
+    //Добавление нового юзера в БД
+    private fun initializeUserInFirestore(uid: String, email: String) {
+        val user = User(uid, "", email)
+        DATABASE.collection(COLLECTION_USERS).document(uid)
+            .set(user)
+    }
+
     //уведомление об успешной регистрации и о требовании подтвердить почту
     private fun createDialog() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getText(R.string.toast_msg_signup_successfully))
             .setMessage(getText(R.string.confirm_email))
             .setPositiveButton(getText(R.string.ok)) {
-                    dialog, id ->  dialog.cancel()
+                    dialog, _ ->  dialog.cancel()
             }
         val alertDialog = builder.create()
         alertDialog.show()

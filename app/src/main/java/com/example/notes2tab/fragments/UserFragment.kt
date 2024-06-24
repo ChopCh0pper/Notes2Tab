@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.notes2tab.R
 import com.example.notes2tab.databinding.FragmentUserBinding
 import com.example.notes2tab.utils.AUTH
+import com.example.notes2tab.utils.USER
 import com.google.firebase.auth.FirebaseUser
 
 class UserFragment : Fragment() {
@@ -23,8 +24,7 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
-        val currentUser = AUTH.currentUser
-        tvUserName.text = currentUser!!.email
+        tvUserName.text = USER.uid
         btSignOut.setOnClickListener { signOut() }
     }
 

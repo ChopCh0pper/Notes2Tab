@@ -1,6 +1,7 @@
 package com.example.notes2tab.fragments
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.InputType
 import androidx.fragment.app.Fragment
@@ -10,13 +11,13 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.notes2tab.R
 import com.example.notes2tab.databinding.FragmentLogInBinding
 import com.example.notes2tab.utils.AUTH
 import com.example.notes2tab.utils.initUser
-import com.example.notes2tab.utils.invalidityMessage
 import com.example.notes2tab.utils.isEmailValid
 import com.google.firebase.auth.FirebaseUser
 
@@ -107,6 +108,18 @@ class LogInFragment : Fragment() {
             }
             setNegativeButton(R.string.cancel, null)
         }.create().show()
+    }
+
+    private fun invalidityMessage(etEmail: EditText, etPass: EditText, context: Context) {
+        etEmail.backgroundTintList = ColorStateList
+            .valueOf(ContextCompat.getColor(context, R.color.errorColor))
+        etPass.backgroundTintList = ColorStateList
+            .valueOf(ContextCompat.getColor(context, R.color.errorColor))
+        Toast.makeText(
+            context,
+            R.string.toast_msg_validityCheck,
+            Toast.LENGTH_SHORT
+        ).show()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

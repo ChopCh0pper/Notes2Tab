@@ -18,7 +18,7 @@
     <string name="favorites">Favorites</string>
     <string name="settings">Settings</string>
     <string name="exit">Exit</string>
-    <string name="toast_msg_validityCheck">Invalid email or password.</string>
+    <string name="toast_msg_validityCheck">One of the fields is invalid.</string>
     <string name="toast_msg_signup_successfully">Account created successfully.</string>
     <string name="toast_msg_signup_failed">Registration failed.</string>
     <string name="toast_msg_login_failed">Authentication failed.</string>
@@ -33,7 +33,12 @@
     <string name="choose_method_for_conversion">Choose the method of sending the photos that we need to convert</string>
     <string name="ok">OK</string>
     <string name="alert_title_pass_reset">Password Reset</string>
+    <string name="alert_title_delete_account">Are you sure?</string>
+    <string name="alert_msg_delete_account">After deletion, the account will be impossible to restore.</string>
     <string name="send">Send</string>
     <string name="cancel">Cancel</string>
+    <string name="delete_account">Delete account</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>

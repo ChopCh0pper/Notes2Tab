@@ -3,16 +3,19 @@ package com.example.notes2tab.fragments
 import android.content.Context
 import android.os.Bundle
 import android.text.InputType
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.notes2tab.R
+import com.example.notes2tab.dataModels.User
+import com.example.notes2tab.dataModels.UserViewModel
 import com.example.notes2tab.databinding.FragmentLogInBinding
 import com.example.notes2tab.utils.AUTH
 import com.example.notes2tab.utils.initUser
@@ -23,6 +26,8 @@ import com.google.firebase.auth.FirebaseUser
 class LogInFragment : Fragment() {
     private lateinit var binding: FragmentLogInBinding
     private lateinit var navController: NavController
+    private val userViewModel: UserViewModel by activityViewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -33,21 +38,25 @@ class LogInFragment : Fragment() {
 
         btLogIn.setOnClickListener {
             if (etEmail.isEmailValid() && etPass.text.isNotEmpty()) {
-
-                logIn(etEmail.text.toString().trim(), etPass.text.toString()) {
-                    //Проверяем верифицировался ли пользователь
-                    if (it.isEmailVerified) {
+                logIn(etEmail.text.toString().trim(), etPass.text.toString()) { user ->
+                    if (user.isEmailVerified) {
                         initUser()
+                        //после инита сохраняем измененные данные
+                        val updatedUser = User(
+                            uid = user.uid,
+                            email = user.email ?: "",
+                            username = user.displayName ?: ""
+                        )
+                        //обновляем
+                        userViewModel.updateUser(updatedUser)
                         navController.navigate(R.id.action_logInFragment_to_userFragment)
-                    }
-                    else {
+                    } else {
                         Toast.makeText(requireContext(),
                             getText(R.string.confirm_email),
                             Toast.LENGTH_SHORT).show()
                         AUTH.signOut()
                     }
                 }
-
             } else {
                 invalidityMessage(etEmail, etPass, requireContext())
             }
